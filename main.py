@@ -1,5 +1,5 @@
 import tkinter as tk
-from random import randint
+from random import randrange
 
 class ColorHEX:
     red: str = '#FF0000'
@@ -27,15 +27,15 @@ class MainWindow(tk.Tk):
 
 class GameField(tk.Canvas):
 
-    def __init__(self, width=400, height=400):
+    def __init__(self, width=500, height=440):
         super().__init__(width=width, height=height, bg=ColorHEX.green)
-        self.width = 400
-        self.height = 400
+        self.width = width
+        self.height = height
         self.ceil = 20
         self._initUI()
     
     def _initUI(self):
-        self.place(x=30, y=30)
+        self.place(x=10, y=10)
 
     
 class Oval:
@@ -45,24 +45,32 @@ class Oval:
         self.size = size
         self.width = size[0]
         self.height = size[1]
-        self.x = randint(0, field.width - self.width)
-        self.y = randint(0,field.height - self.height) 
+        self.x = randrange(0, field.width - self.width, self.field.ceil)
+        self.y = randrange(0,field.height - self.height, self.field.ceil) 
         self.color = color
     
     def draw(self):
         self.field.create_oval(self.x, self.y, self.x + self.width, self.y + self.height, fill=self.color)
     
     def move_up(self):
-        self.y -= self.field.ceil
+        if self.y > 0:
+            self.y -= self.field.ceil
+        self.draw()
 
     def move_down(self):
-        self.y += self.field.ceil
+        if self.y < self.field.height - self.height:
+            self.y += self.field.ceil
+        self.draw()
     
     def move_left(self):
-        self.x -= self.field.ceil
+        if self.x > 0:
+            self.x -= self.field.ceil
+        self.draw()
 
     def move_right(self):
-        self.x += self.field.ceil
+        if self.x < self.field.width - self.width:
+            self.x += self.field.ceil
+        self.draw()
 
 
 class GameControl(tk.Frame):
@@ -75,20 +83,22 @@ class GameControl(tk.Frame):
     def __init__(self, player: Oval):
         super().__init__()
         self.player = player
-        self.width = 20
-        self.height = 20
-        self.btn_up = tk.Button(self, command=player.move_up)
-        self.btn_down = tk.Button(self, command=player.move_down)
-        self.btn_right = tk.Button(self, command=player.move_right)
-        self.btn_left = tk.Button(self, command=player.move_left)
+        self.width = 50
+        self.height = 50
+        self.btn_up = tk.Button(self, text='UP', command=player.move_up)
+        self.btn_down = tk.Button(self, text='DOWN', command=player.move_down)
+        self.btn_right = tk.Button(self, text='RIGHT', command=player.move_right)
+        self.btn_left = tk.Button(self, text='LEFT', command=player.move_left)
         self._initUI()
     
     def _initUI(self):
-        self.place(x=460, y=400)
-        self.btn_up.grid(row=0, column=1)
-        self.btn_left.grid(row=1, column=0)
-        self.btn_right.grid(row=1, column=2)
-        self.btn_down.grid(row=2, column=1)
+        self.place(x=520, y=300)
+        [self.grid_columnconfigure(i, minsize=self.width) for i in range(3)]
+        [self.grid_rowconfigure(i, minsize=self.height) for i in range(3)]
+        self.btn_up.grid(row=0, column=1, sticky='wens')
+        self.btn_left.grid(row=1, column=0, sticky='wens')
+        self.btn_right.grid(row=1, column=2, sticky='wens')
+        self.btn_down.grid(row=2, column=1, sticky='wens')
 
 
 
