@@ -1,6 +1,11 @@
 import tkinter as tk
 from random import randint
 
+class ColorHEX:
+    red: str = '#FF0000'
+    green: str = '#00FF00'
+    blue: str = '#0000FF'
+
 class MainWindow(tk.Tk):
 
     def __init__(self):
@@ -12,8 +17,8 @@ class MainWindow(tk.Tk):
         self.geometry('600x480')
         self.title('Система управления')
         self.field = GameField()
-        self.target = Target(self.field)
-        self.target.draw()
+        self.target = Oval(self.field, (40, 40), ColorHEX.red)
+
 
 
 class GameField(tk.Canvas):
@@ -25,17 +30,19 @@ class GameField(tk.Canvas):
         self._initUI()
     
     def _initUI(self):
-        self.place(x=0, y=0)
-    
-class Target:
+        self.place(x=30, y=30)
 
-    def __init__(self, field: GameField):
+    
+class Oval:
+
+    def __init__(self, field: GameField, size: tuple, color: ColorHEX):
         self.field = field
-        self.x = randint(0, field.width)
-        self.y = randint(0,field.height) 
-        self.width = 20
-        self.height = 20
-        self.color = '#FF0000'
+        self.size = size
+        self.width = size[0]
+        self.height = size[1]
+        self.x = randint(0, field.width - self.width)
+        self.y = randint(0,field.height - self.height) 
+        self.color = color
     
     def draw(self):
         self.field.create_oval(self.x, self.y, self.x + self.width, self.y + self.height, fill=self.color)
