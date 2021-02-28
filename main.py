@@ -102,8 +102,7 @@ class GameControl(tk.Frame):
 
 
 
-
-
+print('что - то печатаю ')
 
 
 MainWindow()
