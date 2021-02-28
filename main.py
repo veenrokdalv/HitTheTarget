@@ -41,8 +41,7 @@ class Target:
         self.field.create_oval(self.x, self.y, self.x + self.width, self.y + self.height, fill=self.color)
 
 
-
-
+print('что - то печатаю')
 
 
 MainWindow()
