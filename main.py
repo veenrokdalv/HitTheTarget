@@ -11,17 +11,19 @@ class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
         self._initUI()
+        self._init_game()
         self.mainloop()
 
     def _initUI(self):
         self.geometry('800x460')
         self.title('Система управления')
+    
+    def _init_game(self):
         self.field = GameField()
         self.target = Oval(self.field, (40, 40), ColorHEX.red)
         self.player = Oval(self.field, (20, 20), ColorHEX.blue)
+        self.game_manager = GameManager(self.player, self.target)
         self.game_control = GameControl(self.player)
-        self.target.draw()
-        self.player.draw()
 
 
 
@@ -45,32 +47,30 @@ class Oval:
         self.size = size
         self.width = size[0]
         self.height = size[1]
-        self.x = randrange(0, field.width - self.width, self.field.ceil)
-        self.y = randrange(0,field.height - self.height, self.field.ceil) 
         self.color = color
     
     def draw(self):
         self.field.create_oval(self.x, self.y, self.x + self.width, self.y + self.height, fill=self.color)
     
+    def random_position(self):
+        self.x = randrange(0, self.field.width - self.width, self.field.ceil)
+        self.y = randrange(0, self.field.height - self.height, self.field.ceil)
+    
     def move_up(self):
         if self.y > 0:
             self.y -= self.field.ceil
-        self.draw()
 
     def move_down(self):
         if self.y < self.field.height - self.height:
             self.y += self.field.ceil
-        self.draw()
     
     def move_left(self):
         if self.x > 0:
             self.x -= self.field.ceil
-        self.draw()
 
     def move_right(self):
         if self.x < self.field.width - self.width:
             self.x += self.field.ceil
-        self.draw()
 
 
 class GameControl(tk.Frame):
@@ -100,9 +100,17 @@ class GameControl(tk.Frame):
         self.btn_right.grid(row=1, column=2, sticky='wens')
         self.btn_down.grid(row=2, column=1, sticky='wens')
 
+class GameManager:
 
-
-print('что - то печатаю ')
-
+    def __init__(self, player: Oval, target: Oval):
+        self.player = player
+        self.target = target
+        self.start()
+    
+    def start(self):
+        self.player.random_position()
+        self.target.random_position()
+        self.player.draw()
+        self.target.draw()
 
 MainWindow()
