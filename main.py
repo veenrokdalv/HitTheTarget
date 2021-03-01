@@ -22,7 +22,7 @@ class MainWindow(tk.Tk):
         self.field = GameField()
         self.target = Oval(self.field, (40, 40), ColorHEX.red)
         self.player = Oval(self.field, (20, 20), ColorHEX.blue)
-        self.game_manager = GameManager(self.player, self.target)
+        self.game_manager = GameMode()
         self.game_control = GameControl(self.player)
 
 
@@ -100,17 +100,20 @@ class GameControl(tk.Frame):
         self.btn_right.grid(row=1, column=2, sticky='wens')
         self.btn_down.grid(row=2, column=1, sticky='wens')
 
-class GameManager:
+class GameMode(tk.Frame):
 
-    def __init__(self, player: Oval, target: Oval):
-        self.player = player
-        self.target = target
-        self.start()
+    def __init__(self):
+        super().__init__()
+        self.mode = tk.IntVar()
+        self.rb_mode1 = tk.Radiobutton(self, text='Режим 1', value=1, variable=self.mode)
+        self.rb_mode2 = tk.Radiobutton(self, text='Режим 2', value=2, variable=self.mode)
+        self.rb_mode3 = tk.Radiobutton(self, text='Режим 3', value=3, variable=self.mode)
+        self._initUI()
     
-    def start(self):
-        self.player.random_position()
-        self.target.random_position()
-        self.player.draw()
-        self.target.draw()
+    def _initUI(self):
+        self.place(x=680, y=370)
+        self.rb_mode1.grid(column=0, row=0)
+        self.rb_mode2.grid(column=0, row=1)
+        self.rb_mode3.grid(column=0, row=2)
 
 MainWindow()
