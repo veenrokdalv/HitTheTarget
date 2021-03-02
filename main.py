@@ -35,6 +35,7 @@ class GameField(tk.Canvas):
         self.height = height
         self.ceil = 20
         self._initUI()
+
     
     def _initUI(self):
         self.place(x=10, y=10)
@@ -48,29 +49,57 @@ class Oval:
         self.width = size[0]
         self.height = size[1]
         self.color = color
+        self.random_position()
+        self.obj = self.draw()
+        self.move_step = 10
     
     def draw(self):
-        self.field.create_oval(self.x, self.y, self.x + self.width, self.y + self.height, fill=self.color)
+
+        print( self.x, self.y, self.x + self.width, self.y + self.height)
+        return self.field.create_oval(self.x, self.y, self.x + self.width, self.y + self.height, fill=self.color)
     
     def random_position(self):
         self.x = randrange(0, self.field.width - self.width, self.field.ceil)
         self.y = randrange(0, self.field.height - self.height, self.field.ceil)
-    
+        self.x1 = self.x + self.width
+        self.y1 = self.y + self.width
+
+    """список из четырех коррдинат"""
+    def assign_new_coordinates(self, n):
+        self.x = n[0]
+        self.y = n[1]
+        self.x1 = n[2]
+        self.y2 = n[3]
+        # print(n)
+
+    """ нужна проверка на границы экрана"""
     def move_up(self):
-        if self.y > 0:
-            self.y -= self.field.ceil
+        new_c = [self.x, self.y - self.move_step, self.x + self.width,
+                          self.y - self.move_step + self.height]
+        self.assign_new_coordinates(new_c)
+        self.field.coords(self.obj, new_c[0], new_c[1], new_c[2],new_c[3])
+
 
     def move_down(self):
-        if self.y < self.field.height - self.height:
-            self.y += self.field.ceil
+        new_c = [self.x, self.y + self.move_step, self.x + self.width,
+                          self.y + self.move_step + self.height]
+        self.assign_new_coordinates(new_c)
+        self.field.coords(self.obj, new_c[0], new_c[1], new_c[2],new_c[3])
     
     def move_left(self):
-        if self.x > 0:
-            self.x -= self.field.ceil
+        new_c = [self.x - self.move_step, self.y, self.x - self.move_step+ self.width,
+                          self.y + self.height]
+        self.assign_new_coordinates(new_c)
+        self.field.coords(self.obj, new_c[0], new_c[1], new_c[2], new_c[3])
+
+
+
 
     def move_right(self):
-        if self.x < self.field.width - self.width:
-            self.x += self.field.ceil
+        new_c = [self.x + self.move_step, self.y, self.x + self.move_step + self.width,
+                 self.y + self.height]
+        self.assign_new_coordinates(new_c)
+        self.field.coords(self.obj, new_c[0], new_c[1], new_c[2], new_c[3])
 
 
 class GameControl(tk.Frame):
@@ -82,13 +111,14 @@ class GameControl(tk.Frame):
 
     def __init__(self, player: Oval):
         super().__init__()
-        self.player = player
-        self.width = 50
-        self.height = 50
-        self.btn_up = tk.Button(self, text='UP', command=player.move_up)
-        self.btn_down = tk.Button(self, text='DOWN', command=player.move_down)
-        self.btn_right = tk.Button(self, text='RIGHT', command=player.move_right)
-        self.btn_left = tk.Button(self, text='LEFT', command=player.move_left)
+        self.player     = player
+        self.width      = 50
+        self.height     = 50
+        self.btn_up     = tk.Button(self, text='UP'     , command=player.move_up)
+        # self.btn_up = tk.Button(self, text='UP', command= move_up)
+        self.btn_down   = tk.Button(self, text='DOWN'   , command=player.move_down)
+        self.btn_right  = tk.Button(self, text='RIGHT'  , command=player.move_right)
+        self.btn_left   = tk.Button(self, text='LEFT'   , command=player.move_left)
         self._initUI()
     
     def _initUI(self):
@@ -115,5 +145,13 @@ class GameMode(tk.Frame):
         self.rb_mode1.grid(column=0, row=0)
         self.rb_mode2.grid(column=0, row=1)
         self.rb_mode3.grid(column=0, row=2)
+
+def move_up():
+    # if self.y > 0
+    #     self.y -= self.field.ceil
+    # player = MainWindow.player
+    # player.coords(GameField, player.x , player.y +1, player.x +player.width  , player.y +1 +player.height)
+    f = 9
+
 
 MainWindow()
